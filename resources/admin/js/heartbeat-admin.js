@@ -40,7 +40,8 @@ HeartBeatAdminClass.prototype.ajaxInterface = function() {
 		},
 
 		actions: {
-			CREATE_INDEX: 'heartbeat_create_index'
+			CREATE_INDEX: 'heartbeat_create_index',
+			GET_META: 'heartbeat_get_index_meta'
 		}
 	}
 };
@@ -48,6 +49,10 @@ HeartBeatAdminClass.prototype.ajaxInterface = function() {
 //create new DB index
 HeartBeatAdminClass.prototype.createNewDBIndex = function() {
 	console.log('create new DB index');
+	this.ajaxInterface().post(this.ajaxInterface().actions.GET_META, {hello: 'test'}, function(err, result) {
+		console.log(result);
+	});
+	return;
 	this.ajaxInterface().post(this.ajaxInterface().actions.CREATE_INDEX, {hello: 'test'}, function(err, result) {
 		console.log(result);
 	});

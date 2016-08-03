@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__FILE__) . '/admin/ui/admin-core-view.php');
+require_once(dirname(__FILE__) . '/views/ui/admin-core-view.php');
 require_once(dirname(__FILE__) . '/api/heartbeat-api.php');
 
 /**
@@ -69,7 +69,7 @@ class HeartBeatCore {
 		if (function_exists('get_current_screen')) {
 			$current_screen = get_current_screen();		
 			if ((substr($screenID, -strlen($this->_optionPageSlug)) === $this->_optionPageSlug)) {	
-				require_once(dirname(__FILE__) . '/admin/ui/heartbeat-admin-header.php');
+				require_once(dirname(__FILE__) . '/views/ui/heartbeat-admin-header.php');
 				HeartBeatHeader::render();
 			}
 		}

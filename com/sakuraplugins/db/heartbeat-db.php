@@ -19,12 +19,12 @@ class HeartBeatDBInterface
 			while ( $queryObj->have_posts() ) {
 				$queryObj->the_post();
 				array_push($result, array(
-					't' => get_the_title()
+					'id' => get_the_ID()
 				));
 			}
 			wp_reset_postdata();
 		}
-		return $result;	
+		return $result;
 	}
 }
 ?>
