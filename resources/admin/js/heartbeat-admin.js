@@ -23,11 +23,11 @@ HeartBeatAdminClass.prototype.ajaxInterface = function() {
 			jQuery.post(
 			    ajaxurl, 
 			    data, 
-			    function(response){
+			    function(response){			    	
 			    	try {
 			    		var responseData = JSON.parse(response);
 			    		if (responseData.status == 'OK') {
-			    			callback(responseData);
+			    			callback(false, responseData.data);
 			    		} else {
 			    			callback(new Error(responseData.msg), responseData);
 			    		}
@@ -41,26 +41,45 @@ HeartBeatAdminClass.prototype.ajaxInterface = function() {
 
 		actions: {
 			CREATE_INDEX: 'heartbeat_create_index',
-			GET_META: 'heartbeat_get_index_meta'
+			GET_META: 'heartbeat_get_index_meta',
+			GET_SEARCH_TERMS: 'heartbeat_get_post_types',
+			UPDATE_INDEX_TERMS: 'heartbeat_update_index_terms'
 		}
 	}
 };
 
 //create new DB index
-HeartBeatAdminClass.prototype.createNewDBIndex = function() {
-	console.log('create new DB index');
-	this.ajaxInterface().post(this.ajaxInterface().actions.GET_META, {hello: 'test'}, function(err, result) {
-		console.log(result);
-	});
-	return;
-	this.ajaxInterface().post(this.ajaxInterface().actions.CREATE_INDEX, {hello: 'test'}, function(err, result) {
-		console.log(result);
-	});
+HeartBeatAdminClass.prototype.createNewDBIndex = function(callback) {
+	this.ajaxInterface().post(this.ajaxInterface().actions.CREATE_INDEX, {}, callback);
+};
+
+//get index meta
+HeartBeatAdminClass.prototype.getIndexMeta = function(callback) {
+	this.ajaxInterface().post(this.ajaxInterface().actions.GET_META, {}, callback);
+};
+
+//fetch search terms
+HeartBeatAdminClass.prototype.fetchSearchTerms = function(callback) {
+	this.ajaxInterface().post(this.ajaxInterface().actions.GET_SEARCH_TERMS, {}, callback);
+};
+
+//update search terms
+HeartBeatAdminClass.prototype.updateSearchTerms = function(terms, callback) {
+	this.ajaxInterface().post(this.ajaxInterface().actions.UPDATE_INDEX_TERMS, {terms: terms}, callback);
+};
+
+//simple modal helper
+HeartBeatAdminClass.prototype.simpleModal = function(title, content) {	
+	jQuery('#hb-modal .hb-modal-header').html(title || 'title');
+	jQuery('#hb-modal .hb-modal-content').html(content || 'content');
+	jQuery('#hb-modal').openModal();
 };
 
 //init views
 HeartBeatAdminClass.prototype.initViews = function() {
-	this.views['indexOptions'] = new HeartBeatViews.IndexOptions();
+	var indexModel = new HeartBeatModels.IndexModel();
+	this.views['indexOptions'] = new HeartBeatViews.IndexOptions({model: indexModel});
+	jQuery('.admin-tabs-container').show();
 };
 
 //init

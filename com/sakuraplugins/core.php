@@ -1,6 +1,7 @@
 <?php
 require_once(dirname(__FILE__) . '/views/ui/admin-core-view.php');
 require_once(dirname(__FILE__) . '/api/heartbeat-api.php');
+require_once(dirname(__FILE__) . '/utils/utils.php');
 
 /**
 * Base plugin class
@@ -24,7 +25,17 @@ class HeartBeatCore {
 
 	//Enqueue scripts frontend
 	public function wpEnqueueScriptsHandler() {
+		wp_enqueue_script('jquery');
+		wp_enqueue_script('underscore', false, array('jquery'));
 
+		wp_register_script('lunr_js', HEARTBEAT_FRONT_URI.'/js/lunr.min.js', array('underscore'), FALSE, TRUE);
+		wp_enqueue_script('lunr_js');
+				
+		wp_register_script('heart_beat_core_js', HEARTBEAT_FRONT_URI.'/js/heart-beat.js', array('lunr_js'), FALSE, TRUE);
+		wp_enqueue_script('heart_beat_core_js');
+
+
+		wp_localize_script('heart_beat_core_js', 'HeartBeatAjax', array('url' => admin_url('admin-ajax.php')));
 	}
 
 	//admin scripts
@@ -51,13 +62,21 @@ class HeartBeatCore {
 			wp_register_script('materialize_js', HEARTBEAT_ADMIN_URI.'/libs/materialize/js/materialize.min.js', array('jquery'), FALSE, TRUE);
 			wp_enqueue_script('materialize_js');
 
-			//heartbeat_admin
+			//heartbeat_admin models
+			wp_register_script('heartbeat_admin_models', HEARTBEAT_ADMIN_URI.'/js/heartbeat-admin-models.js', array('backbone'), FALSE, TRUE);
+			wp_enqueue_script('heartbeat_admin_models');
+
+			//heartbeat_admin views
 			wp_register_script('heartbeat_admin_views', HEARTBEAT_ADMIN_URI.'/js/heartbeat-admin-views.js', array('backbone'), FALSE, TRUE);
 			wp_enqueue_script('heartbeat_admin_views');
 
 			//heartbeat_admin
 			wp_register_script('heartbeat_admin', HEARTBEAT_ADMIN_URI.'/js/heartbeat-admin.js', array('backbone'), FALSE, TRUE);
-			wp_enqueue_script('heartbeat_admin');									
+			wp_enqueue_script('heartbeat_admin');
+
+			HBeatUtils::enqueFontsFrom(array(
+				array('key'=>'material-icons', 'resource'=>'://fonts.googleapis.com/icon?family=Material+Icons'),
+			));									
 		}
 
 	}
@@ -90,7 +109,7 @@ class HeartBeatCore {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_enqueue_scripts', array($this, 'adminEnqueueScriptsHandler' ) );
 		add_action( 'wp_before_admin_bar_render', array($this, 'adminBarCustom' ) );
-		//add_action(	'wp_enqueue_scripts', array($this, 'wpEnqueueScriptsHandler'));
+		add_action(	'wp_enqueue_scripts', array($this, 'wpEnqueueScriptsHandler'));
 		//add_action( 'wp_head', array($this, 'hookCustomCSS'));
 		
 
@@ -98,6 +117,9 @@ class HeartBeatCore {
 		foreach ($apiActions as $key => $value) {
 			add_action('wp_ajax_' . $key, array(HeartBeatAPI::getInstance(), $key));
 		}
+
+		add_action( 'wp_ajax_nopriv_heartbeat_front_get_meta', array(HeartBeatAPI::getInstance(), 'heartbeat_front_get_meta'));
+		add_action( 'wp_ajax_nopriv_heartbeat_front_get_index_data', array(HeartBeatAPI::getInstance(), 'heartbeat_front_get_index_data'));	
 	}
 }
 
