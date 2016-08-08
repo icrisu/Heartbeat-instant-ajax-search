@@ -10,7 +10,7 @@ class HBSettingsModel
 	public $isNativeIntegration = 'false';
 	public $nativeSelector = '';
 
-	public static $metaKey = 'heartbeat_settings_model_meta';
+	private static $metaKey = 'heartbeat_settings_model_meta';
 
 	function __construct()
 	{
@@ -33,6 +33,12 @@ class HBSettingsModel
 			'isNativeIntegration' => isset($data['isNativeIntegration']) ? $data['isNativeIntegration'] : $this->isNativeIntegration,
 			'nativeSelector' => isset($data['nativeSelector']) ? $data['nativeSelector'] : $this->nativeSelector,
 		));
+	}
+
+	public function destroy() {
+		try {
+			delete_option(self::$metaKey);
+		} catch (Exception $e) {}
 	}
 }
 ?>

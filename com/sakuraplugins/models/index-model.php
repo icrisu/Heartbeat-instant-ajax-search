@@ -199,6 +199,15 @@ class IndexModel
 			'result' => array()
 		);
 	}
+	
+	public function destroy() {
+		try {
+			delete_option(self::$optionMeta);
+			delete_option(self::$optionMetaInfo);
+			delete_option(self::$optionMetaPrevious);
+			delete_option(self::$optionMetaInfoPrevious);
+		} catch (Exception $e) {}
+	}	
 
 }
 ?>

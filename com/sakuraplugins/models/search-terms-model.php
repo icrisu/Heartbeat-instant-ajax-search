@@ -45,5 +45,11 @@ class HBSearchTermsModel
 		}
 		return $out;
 	}
+
+	public function destroy() {
+		try {
+			delete_option(self::$termsMeta);
+		} catch (Exception $e) {}
+	}	
 }
 ?>
