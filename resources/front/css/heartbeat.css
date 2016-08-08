@@ -89,3 +89,98 @@
     display: block;
 }
 /* end autocomplete widget */
+
+
+/* material design search form ------------------------------- */
+.hbmd-group        { 
+  position:relative; 
+  margin-bottom:45px; 
+}
+.hbmd-form input         {
+  font-size:18px;
+  padding:10px 10px 10px 5px;
+  display:block;
+  
+  border:none !important;
+  background: none !important;
+  border-bottom: 1px solid #757575 !important;
+  font-family: 'Roboto', sans-serif;
+}
+.hbmd-form input:focus     { outline:none; border: none; }
+
+/* LABEL ======================================= */
+.hbmd-form label          {
+  color:#999; 
+  font-size:18px;
+  font-weight:normal;
+  position:absolute;
+  pointer-events:none;
+  left:5px;
+  top:10px;
+  transition:0.2s ease all; 
+  font-family: 'Roboto', sans-serif;
+}
+
+/* active state */
+.hbmd-form input:focus ~ label, .hbmd-form input:valid ~ label     {
+  top:-20px;
+  font-size:14px;
+  color:#64b5f6;
+}
+
+/* BOTTOM BARS ================================= */
+.hbmd-form .bar  { position:relative; display:block;}
+.hbmd-form .bar:before, .hbmd-form .bar:after {
+  content:'';
+  height:2px; 
+  width:0;
+  bottom: 0px; 
+  position:absolute;
+  background: #64b5f6; 
+  transition:0.2s ease all; 
+}
+.hbmd-form .bar:before {
+  left:50%;
+}
+.hbmd-form .bar:after {
+  right:50%; 
+}
+
+/* active state */
+.hbmd-form input:focus ~ .bar:before, .hbmd-form input:focus ~ .bar:after {
+  width: 50%;
+}
+
+/* form resize based on container size*/
+.hbmd-form-ui[min-width~="350px"] form {	
+	width: 100%;
+}
+
+.hbmd-form-ui[min-width~="450px"] form {	
+	width: 50%;
+}
+/* end material design search form ------------------------------- */
+
+
+/* hb simple search form ------------------------------- */
+.hb-form-ui .hb-search-input {
+    width: 250px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    background-image: url('../img/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    padding: 12px 20px 12px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+    font-family: 'Roboto', sans-serif;
+}
+
+.hb-form-ui .hb-search-input:focus {
+    width: 100%;
+}
+
+/* end hb simple search form ------------------------------- */

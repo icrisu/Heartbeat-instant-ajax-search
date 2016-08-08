@@ -157,9 +157,21 @@ HeartBeatSearchClass.prototype.handleInput = function(hbmdInput) {
 //search input handler
 HeartBeatSearchClass.prototype.startInputHandler = function() {
 	var _self = this;
+	//handle default WP theme search form 
 	jQuery('.search-field').each(function(indx) {
 	    _self.handleInput(jQuery(this));	
 	});
+
+	//handle material design custom form
+	jQuery('.hbmd-search-input').each(function(indx) {
+	    _self.handleInput(jQuery(this));	
+	});
+
+	//handle simple custom form
+	jQuery('.hb-search-input').each(function(indx) {
+	    _self.handleInput(jQuery(this));	
+	});	
+
 };
 
 //process result
@@ -253,15 +265,9 @@ HeartBeatSearchClass.prototype.init = function() {
 		return;
 	}
 	this.storageInterface = new this.StorageInterface();
+	console.log(this.storageInterface.getMeta());
+	return;
 
 	this.ajaxInterface().post(this.ajaxInterface().actions.GET_META, {}, _.bind(this.initWithMeta, this));
-
-  jQuery('input').blur(function() {
-    // check if the input has any value (if we've typed into it)
-    if (jQuery(this).val())
-      jQuery(this).addClass('used');
-    else
-      jQuery(this).removeClass('used');
-  });
 
 };

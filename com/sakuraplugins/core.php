@@ -36,6 +36,12 @@ class HeartBeatCore {
 		wp_register_script('lunr_js', HEARTBEAT_FRONT_URI.'/js/lunr.min.js', array('underscore'), FALSE, TRUE);
 		wp_enqueue_script('lunr_js');
 
+		wp_register_script('resize_sensor', HEARTBEAT_FRONT_URI.'/libs/element-queries/ResizeSensor.js', array('jquery'), FALSE, TRUE);
+		wp_enqueue_script('resize_sensor');
+
+		wp_register_script('element_queries', HEARTBEAT_FRONT_URI.'/libs/element-queries/ElementQueries.js', array('jquery'), FALSE, TRUE);
+		wp_enqueue_script('element_queries');
+
 		wp_register_script('heart_beat_core_js', HEARTBEAT_FRONT_URI.'/js/heart-beat.js', array('lunr_js'), FALSE, TRUE);
 		wp_enqueue_script('heart_beat_core_js');
 
@@ -47,9 +53,6 @@ class HeartBeatCore {
 			'ajaxurl' => admin_url('admin-ajax.php'),
 			'md_max_results' => 5
 		));
-
-		//wp_register_style( 'jquery-ui-styles','http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css' );
-		//wp_enqueue_style( 'jquery-ui-styles');	
 
 		wp_register_style('heartbeat_icons', HEARTBEAT_FRONT_URI . '/css/fonts/style.css');
 		wp_enqueue_style('heartbeat_icons');
