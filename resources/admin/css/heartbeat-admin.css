@@ -79,6 +79,13 @@
 }
 /* end indexing options */
 
+/* settings */
+#hb_custom_css {
+	min-width: 100%;
+	min-height: 150px;
+}
+/* end settings */
+
 .hb-modal-header {
 	color: #26a69a;
 }

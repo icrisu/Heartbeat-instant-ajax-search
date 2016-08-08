@@ -92,5 +92,40 @@ var HeartBeatViews = {
 			}
 		});
 		return new view(options);
-	}
+	},
+
+	//Settings  view
+	SettingsView: function(options) {
+		var view = Backbone.View.extend({
+
+			events: {
+				'click .saveSettingsBtn' : 'saveSettings'
+			},
+
+			el: '#settings',
+
+			renderMaxResult: function() {
+				this.$el.find('.hb_max_results').val(this.model.get('maxResults'));
+			},
+
+			renderCustomCSS: function() {
+				document.getElementById('hb_custom_css').value = this.model.get('customCSS');
+			},			
+
+			initialize: function() {
+				this.model.on('change:maxResults', _.bind(this.renderMaxResult, this));
+				this.model.on('change:customCSS', _.bind(this.renderCustomCSS, this));
+				this.model.fetchData();
+			},
+
+			saveSettings: function() {
+				this.model.set('maxResults', this.$el.find('.hb_max_results').val());
+				this.model.set('customCSS', document.getElementById('hb_custom_css').value);
+				this.model.saveData();
+			}
+		});
+		return new view(options);
+	}	
+
+
 };

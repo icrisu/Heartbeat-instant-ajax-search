@@ -224,7 +224,7 @@ HeartBeatSearchClass.prototype.processResult = function(result) {
 			thumb: store[result[i].ref].i,
 			href: store[result[i].ref].l
 		});
-		if (i == HeartBeatOptions.md_max_results) {
+		if (i == parseInt(HeartBeatOptions.md_max_results, 10) - 1) {
 			break;
 		}
 	}

@@ -3,21 +3,13 @@
 		<!--tabs menu-->
 		<ul class="tabs">
 			<li class="tab col s3"><a class="active" href="#index-options">Indexing options</a></li>
-			<li class="tab col s3"><a href="#test2">Cron options</a></li>
+			<li class="tab col s3"><a href="#settings">Settings</a></li>
 			<li class="tab col s3"><a href="#test3">Shortcodes</a></li>
 			<li class="tab col s3"><a href="#test4">Quick help</a></li>
 		</ul>
 		<!--/tabs menu-->
 	</div>
 
-	<!--
-	<div class="row">
-		<div class="col s12">
-			<div class="progress teal lighten-4" style="margin-top: 20px;">
-			  <div class="indeterminate teal lighten-3"></div>
-			</div>		
-		</div>
-	</div>-->
 
 	<!--tabs container-->
 	<div class="admin-tabs-container">
@@ -52,7 +44,26 @@
 		<!--/index options container-->
 
 
-		<div id="test2" class="col s12">Test 2</div>
+		<!--settings tab-->
+		<div id="settings" class="row">
+			<div class="col s12">
+				<div class="admin-tab-content">
+					<div class="row">
+						<div class="col s4">
+							<p><b>Maximum search results</b></p>
+							<p class="range-field">
+						      <input class="hb_max_results" type="range" min="1" max="15" value="5" />
+						    </p>
+						    <p><b>Custom CSS</b></p>
+						    <textarea id="hb_custom_css"></textarea>
+						    <p><a class="saveSettingsBtn heartbeat-admin-btn waves-effect waves-light btn">Save settings</a>		
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--/settings tab-->
+
 		<div id="test3" class="col s12">Test 3</div>
 		<div id="test4" class="col s12">Test 4</div>
 	</div>

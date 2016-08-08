@@ -1,6 +1,7 @@
 <?php
 require_once(dirname(__FILE__) . '/../models/index-model.php');
 require_once(dirname(__FILE__) . '/../models/search-terms-model.php');
+require_once(dirname(__FILE__) . '/../models/settings-model.php');
 /**
  * API
  */
@@ -18,7 +19,9 @@ class HeartBeatAPI
 			'heartbeat_get_post_types' => array($this, 'heartbeat_get_post_types'),
 			'heartbeat_update_index_terms' => array($this, 'heartbeat_update_index_terms'),
 			'heartbeat_front_get_meta' => array($this, 'heartbeat_front_get_meta'),
-			'heartbeat_front_get_index_data' => array($this, 'heartbeat_front_get_index_data')
+			'heartbeat_front_get_index_data' => array($this, 'heartbeat_front_get_index_data'),
+			'heartbeat_get_settings' => array($this, 'heartbeat_get_settings'),
+			'heartbeat_set_settings' => array($this, 'heartbeat_get_settings')			
 		);
 	}
 
@@ -120,6 +123,28 @@ class HeartBeatAPI
 		echo json_encode(array('status' => 'OK', 'data' => $m));
 		die();
 	}
+
+	public function heartbeat_get_settings() {
+		if (!is_admin()) {
+			echo json_encode(array('status' => 'FAIL', 'msg' => 'Something went wrong, only admin can save this data!'));
+			die();
+		}
+		$model = new HBSettingsModel();
+		echo json_encode(array('status' => 'OK', 'data' => $model));
+		die();
+	}
+
+	public function heartbeat_set_settings() {
+		if (!is_admin()) {
+			echo json_encode(array('status' => 'FAIL', 'msg' => 'Something went wrong, only admin can save this data!'));
+			die();
+		}
+		$mdelData = isset($_POST['model']) ? $_POST['model'] : array();
+		$model = new HBSettingsModel();
+		$model->saveData($mdelData);
+		echo json_encode(array('status' => 'OK', 'data' => $model));
+		die();
+	}	
 
 	//frontend
 	/**

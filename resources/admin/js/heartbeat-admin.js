@@ -43,7 +43,9 @@ HeartBeatAdminClass.prototype.ajaxInterface = function() {
 			CREATE_INDEX: 'heartbeat_create_index',
 			GET_META: 'heartbeat_get_index_meta',
 			GET_SEARCH_TERMS: 'heartbeat_get_post_types',
-			UPDATE_INDEX_TERMS: 'heartbeat_update_index_terms'
+			UPDATE_INDEX_TERMS: 'heartbeat_update_index_terms',
+			GET_SETTINGS: 'heartbeat_get_settings',
+			SET_SETTINGS: 'heartbeat_set_settings'
 		}
 	}
 };
@@ -68,6 +70,16 @@ HeartBeatAdminClass.prototype.updateSearchTerms = function(terms, callback) {
 	this.ajaxInterface().post(this.ajaxInterface().actions.UPDATE_INDEX_TERMS, {terms: terms}, callback);
 };
 
+//fetch settings
+HeartBeatAdminClass.prototype.fetchSettings = function(callback) {
+	this.ajaxInterface().post(this.ajaxInterface().actions.GET_SETTINGS, {}, callback);
+};
+
+//save settings
+HeartBeatAdminClass.prototype.saveSettings = function(model, callback) {
+	this.ajaxInterface().post(this.ajaxInterface().actions.SET_SETTINGS, {model: model}, callback);
+};
+
 //simple modal helper
 HeartBeatAdminClass.prototype.simpleModal = function(title, content) {	
 	jQuery('#hb-modal .hb-modal-header').html(title || 'title');
@@ -77,8 +89,13 @@ HeartBeatAdminClass.prototype.simpleModal = function(title, content) {
 
 //init views
 HeartBeatAdminClass.prototype.initViews = function() {
+
 	var indexModel = new HeartBeatModels.IndexModel();
 	this.views['indexOptions'] = new HeartBeatViews.IndexOptions({model: indexModel});
+	
+	var settingsModel = new HeartBeatModels.SettingsModel();
+	this.views['settings'] = new HeartBeatViews.SettingsView({model: settingsModel});
+
 	jQuery('.admin-tabs-container').show();
 };
 

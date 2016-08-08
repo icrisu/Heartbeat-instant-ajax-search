@@ -90,5 +90,30 @@ var HeartBeatModels = {
 			}		
 		});
 		return new model(data);
+	},
+
+	//settings model
+	SettingsModel: function(data) {
+		var model = Backbone.Model.extend({
+			defaults: {
+				customCSS: '',
+				maxResults: 5
+			},
+
+			fetchData: function() {
+				HeartBeatAdmin.fetchSettings(_.bind(function(err, result) {
+					this.set('customCSS', result.customCSS);
+					this.set('maxResults', result.maxResults);
+				}, this));			
+			},
+
+			saveData: function() {
+				HeartBeatAdmin.saveSettings(this.toJSON(), _.bind(function(err, result) {
+					Materialize.toast('Saved!', 3000);
+				}, this));				
+			}
+
+		});
+		return new model(data);
 	}
 };

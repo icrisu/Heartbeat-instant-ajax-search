@@ -3,6 +3,7 @@ require_once(dirname(__FILE__) . '/views/ui/admin-core-view.php');
 require_once(dirname(__FILE__) . '/api/heartbeat-api.php');
 require_once(dirname(__FILE__) . '/utils/utils.php');
 require_once(dirname(__FILE__) . '/shortcodes/hb-shortcodes.php');
+require_once(dirname(__FILE__) . '/models/settings-model.php');
 
 /**
 * Base plugin class
@@ -49,9 +50,10 @@ class HeartBeatCore {
 			array('key'=>'hb-roboto', 'resource'=>'://fonts.googleapis.com/css?family=Roboto:400,300,500'),
 		));
 
+		$settingsModel = new HBSettingsModel();
 		wp_localize_script('heart_beat_core_js', 'HeartBeatOptions', array(
 			'ajaxurl' => admin_url('admin-ajax.php'),
-			'md_max_results' => 5
+			'md_max_results' => (int)$settingsModel->maxResults
 		));
 
 		wp_register_style('heartbeat_icons', HEARTBEAT_FRONT_URI . '/css/fonts/style.css');
@@ -59,6 +61,13 @@ class HeartBeatCore {
 
 		wp_register_style('heartbeat_style', HEARTBEAT_FRONT_URI . '/css/heartbeat.css');
 		wp_enqueue_style('heartbeat_style');			
+	}
+
+	//add custom css
+	public function hookCustomCSS() {
+		$settingsModel = new HBSettingsModel();
+		$output = '<style type="text/css">' . $settingsModel->customCSS . '</style>';
+		echo $output;
 	}
 
 	//admin scripts
@@ -116,14 +125,6 @@ class HeartBeatCore {
 		}
 	}
 
-	//single template
-	public function sk_plugin_single($single_template) {
-		global $post;
-		if ($post->post_type == self::APPETIT_CPT_TYPE) {			
-			$single_template = dirname( __FILE__ ) . '/single/appetit_cpt-template.php';										
-		}
-		return $single_template;
-	}
 
 	//init listeners
 	public function run($opts=NULL) {
@@ -132,7 +133,7 @@ class HeartBeatCore {
 		add_action( 'admin_enqueue_scripts', array($this, 'adminEnqueueScriptsHandler' ) );
 		add_action( 'wp_before_admin_bar_render', array($this, 'adminBarCustom' ) );
 		add_action(	'wp_enqueue_scripts', array($this, 'wpEnqueueScriptsHandler'));
-		//add_action( 'wp_head', array($this, 'hookCustomCSS'));
+		add_action( 'wp_head', array($this, 'hookCustomCSS'));
 		
 
 		$apiActions = HeartBeatAPI::getInstance()->getApiActions();
