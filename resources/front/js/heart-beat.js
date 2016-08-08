@@ -93,6 +93,42 @@ HeartBeatSearchClass.prototype.StorageInterface = function() {
 		return this.indexes;
 	}
 
+	this.removeIndexes = function(toBeRemoved, hash) {
+		//console.log('remove here');
+		this.getIndexes();	
+		//console.log(this.indexes);
+		for (var k in toBeRemoved) {
+		    if (toBeRemoved.hasOwnProperty(k)) {
+		       try {
+		       		//console.log(this.indexes[k]);
+		       		delete this.indexes[k];
+		       } catch(e) {
+		       		this.log(e);
+		       }
+		    }
+		}
+		//console.log(this.indexes);
+		this.saveIndexes({
+			hash: hash,
+			indexes: this.indexes
+		});
+	}
+
+	this.addIndexes = function(toBeAdded, hash) {
+		this.getIndexes();
+		for (var k in toBeAdded) {
+		    if (toBeAdded.hasOwnProperty(k)) {
+		       try {
+		       		this.indexes[k] = toBeAdded[k];
+		       } catch(e) {}
+		    }
+		}
+		this.saveIndexes({
+			hash: hash,
+			indexes: this.indexes
+		});
+	}
+
 };
 
 //check if storage is available
@@ -143,7 +179,6 @@ HeartBeatSearchClass.prototype.handleInput = function(hbmdInput) {
 
             	var htmlUI = jQuery(html);
             	htmlUI.css('opacity', 0);
-            	console.log(htmlUI.height())
             	htmlUI.stop().animate({
             		opacity: 1
             	}, 200);
@@ -249,6 +284,34 @@ HeartBeatSearchClass.prototype.initWithMeta = function(err, result) {
 	}
 };
 
+/**
+ * process result 
+ * @param  {object} result 
+ * @return {HeartBeatSearchClass}
+ */
+HeartBeatSearchClass.prototype.processIndexesResult = function(result) {
+	if (result.indexes && result.indexes == 'no_change') {
+		console.log('do nothing same hash');
+		return this;
+	}
+	if (result.indexes) {
+		console.log('save all indexes');
+		this.storageInterface.saveIndexes(result);
+	} else {
+		if (result.removed && result.hash) {
+			this.storageInterface.removeIndexes(result.removed, result.hash);
+		}
+		if (result.added && result.hash) {
+			this.storageInterface.addIndexes(result.added, result.hash);
+		}
+		if (result.hash) {
+			//this.storageInterface.saveMeta(result.hash);
+		}		
+		console.log('compute result');
+	}
+	return this;
+};
+
 //log helper
 HeartBeatSearchClass.prototype.log = function(msg) {
 	if (!window.console) {
@@ -265,9 +328,23 @@ HeartBeatSearchClass.prototype.init = function() {
 		return;
 	}
 	this.storageInterface = new this.StorageInterface();
-	console.log(this.storageInterface.getMeta());
-	return;
+	var meta = this.storageInterface.getMeta();
+	var meta = (_.isNull(meta)) ? {} : meta;
+	
+	this.ajaxInterface().post(this.ajaxInterface().actions.GET_INDEX_DATA, meta, _.bind(function(err, result) {
+		if (!err && result) {
+			this.processIndexesResult(result).startSearchEngine();			
+		}
+	}, this));
 
-	this.ajaxInterface().post(this.ajaxInterface().actions.GET_META, {}, _.bind(this.initWithMeta, this));
+
+	return;
+	/*
+	if (_.isNull(meta)) {
+		console.log('meta is null');
+		this.ajaxInterface().post(this.ajaxInterface().actions.GET_META, {}, _.bind(this.initWithMeta, this));
+	} else {
+		console.log('not null');
+	}*/
 
 };

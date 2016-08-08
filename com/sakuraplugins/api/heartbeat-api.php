@@ -138,9 +138,42 @@ class HeartBeatAPI
 	 * @return array
 	 */
 	public function heartbeat_front_get_index_data() {
+		$hash = isset($_POST['hash']) ? $_POST['hash'] : 'empty';
+
 		$m = new IndexModel();
-		$m->get();
-		echo json_encode(array('status' => 'OK', 'data' => array('hash' => $m->hash, 'indexes' => $m->result)));
+		$m->getMeta();
+		$m->getPreviousHash();
+		if ($hash == $m->hash) {
+			//no differences
+			echo json_encode(array('status' => 'OK', 'data' => array('hash' => $m->hash, 'indexes' => 'no_change')));
+		} else if ($hash == $m->previousHash) {
+			//get differences			
+			$m->get();
+			$diff = $m->getPreviousResult()->getDiffIndexes();
+			echo json_encode(array('status' => 'OK', 'data' => array('hash' => $m->hash, 'removed' => $diff['removed'], 'added' => $diff['added'])));
+		} else {
+			//get all results
+			$m->get();
+			echo json_encode(array('status' => 'OK', 'data' => array('hash' => $m->hash, 'indexes' => $m->result)));
+		}
+
+
+		/*
+		if ($hash == 'empty') {
+			//get all indexes
+			$m->get();
+			echo json_encode(array('status' => 'OK', 'data' => array('hash' => $m->hash, 'indexes' => $m->result)));
+		} else if ($hash == $m->hash) {
+			//no differences
+			echo json_encode(array('status' => 'OK', 'data' => array('hash' => $m->hash, 'indexes' => 'no_change')));
+		} else {
+			//send differences
+			if ($m->previousHash != 'empty') {
+				$m->getPreviousResult();
+				$diff = $m->getDiffIndexes();
+				echo json_encode(array('status' => 'OK', 'data' => array('hash' => $m->hash, 'removed' => $diff['removed'], 'added' => $diff['added'])));
+			}
+		}*/	
 		die();
 	}
 }
