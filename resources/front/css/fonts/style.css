@@ -1,0 +1,42 @@
+@font-face {
+  font-family: 'heartbeat';
+  src:  url('fonts/heartbeat.eot?c66c2i');
+  src:  url('fonts/heartbeat.eot?c66c2i#iefix') format('embedded-opentype'),
+    url('fonts/heartbeat.ttf?c66c2i') format('truetype'),
+    url('fonts/heartbeat.woff?c66c2i') format('woff'),
+    url('fonts/heartbeat.svg?c66c2i#heartbeat') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="heartbeat-icon-"], [class*=" heartbeat-icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'heartbeat' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.heartbeat-icon-arrow-right2:before {
+  content: "\e904";
+}
+.heartbeat-icon-arrow-right:before {
+  content: "\e900";
+}
+.heartbeat-icon-chevron-thin-right:before {
+  content: "\e903";
+}
+.heartbeat-icon-chevron-right:before {
+  content: "\e901";
+}
+.heartbeat-icon-angle-right:before {
+  content: "\e902";
+}
+

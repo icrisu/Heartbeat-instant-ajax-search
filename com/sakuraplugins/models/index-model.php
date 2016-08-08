@@ -90,8 +90,10 @@ class IndexModel
 		$this->result = array();
 		if (empty($rawData)) {
 			return;
-		}		
+		}
+		$fakeIdCount = rand(0, 99);
 		foreach ($rawData as $dataEntry) {
+			$fakeIdCount++;
 			$thumbUrl = wp_get_attachment_image_url(get_post_thumbnail_id($dataEntry['id']));
 			if ($thumbUrl && !empty($thumbUrl)) {
 				$dataEntry['i'] = $thumbUrl;	
@@ -105,13 +107,13 @@ class IndexModel
 				}				
 			}
 
-			if (sizeof($curratedTags) != 0) {
-				$dataEntry['tg'] = $curratedTags;
+			if (sizeof($curratedTags) != 0) {				
+				$dataEntry['tg'] = implode(" ", $curratedTags);
 			}
 			$dataEntry['t'] = get_the_title($dataEntry['id']);
 			$dataEntry['l'] = esc_url(get_permalink($dataEntry['id']));
 			unset($dataEntry['id']);
-			array_push($this->result, $dataEntry);		
+			$this->result[(string)$fakeIdCount . (string)rand(0, 99)] = $dataEntry;	
 		}
 
 		$serializedResult = serialize($this->result);

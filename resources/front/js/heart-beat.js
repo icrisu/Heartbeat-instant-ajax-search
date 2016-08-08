@@ -21,7 +21,7 @@ HeartBeatSearchClass.prototype.ajaxInterface = function() {
 			data.action = action;
 
 			jQuery.post(
-			    HeartBeatAjax.url, 
+			    HeartBeatOptions.ajaxurl, 
 			    data, 
 			    function(response){			    	
 			    	try {
@@ -57,6 +57,7 @@ HeartBeatSearchClass.prototype.StorageInterface = function() {
 
 	this.meta;
 	this.indexes;
+	this.SearchEngine;
 
 	//get saved meta
 	this.getMeta = function() {
@@ -106,9 +107,114 @@ HeartBeatSearchClass.prototype.checkStorageAvailability = function() {
     }
 };
 
+HeartBeatSearchClass.prototype.handleInput = function(hbmdInput) {
+
+	var _self = this;
+	hbmdInput.autocomplete({
+		delay: 100,
+		source: function(request, response) {				
+			response(_self.processResult(_self.Search(request.term)));
+		},
+		focus: function( event, ui ) {			
+			hbmdInput.val(ui.item.title);
+			return false;
+		},
+		select: function( event, ui ) {
+			window.location.href = ui.item.href;
+			return false;
+		},	
+		create: function() {
+            jQuery(this).data('ui-autocomplete')._renderItem = function (ul, item) {            	
+            	var thumb = '';
+            	if (item.thumb) {
+            		thumb += [
+            			'<span class="hb-item-thumb-ui">',
+            				'<img class="hb-item-thumb" src="' + item.thumb + '" alt="" />',
+            			'</span>'
+            		].join('');
+            	}
+            	var html = [
+            		'<li class="hb-autocomplete-item-li">',
+            			thumb,
+            			'<a class="hb-autocomplete-item" href="' + item.href + '">' + item.title + '</a>',
+            			'<span class="hb-autocomplete-item-action-ui"><span class="hb-autocomplete-item-action heartbeat-icon-chevron-right"></span></span>',
+            		'<li>'
+            	].join('');
+
+            	var htmlUI = jQuery(html);
+            	htmlUI.css('opacity', 0);
+            	console.log(htmlUI.height())
+            	htmlUI.stop().animate({
+            		opacity: 1
+            	}, 200);
+            	return htmlUI.appendTo(ul);
+            }
+           
+		}			
+	});
+};
+
+//search input handler
+HeartBeatSearchClass.prototype.startInputHandler = function() {
+	var _self = this;
+	jQuery('.search-field').each(function(indx) {
+	    _self.handleInput(jQuery(this));	
+	});
+};
+
+//process result
+HeartBeatSearchClass.prototype.processResult = function(result) {
+	if (_.isArray(result) && result.length == 0) {
+		return result;
+	}
+	var out = [];
+	var store = this.storageInterface.getIndexes();
+
+
+	for (var i = 0; i < result.length; i++) {
+		out.push({
+			title: store[result[i].ref].t,
+			thumb: store[result[i].ref].i,
+			href: store[result[i].ref].l
+		});
+		if (i == HeartBeatOptions.md_max_results) {
+			break;
+		}
+	}
+	return out;
+};
+
+HeartBeatSearchClass.prototype.Search = function(query) {
+	if (!this.SearchEngine) {
+		return [];
+	}
+	return this.SearchEngine.search(query);
+};
+
 HeartBeatSearchClass.prototype.startSearchEngine = function() {
 	this.log('start engine');
-	console.log(this.storageInterface.getIndexes());
+	var store = this.storageInterface.getIndexes();
+	
+	this.SearchEngine = lunr(function() {
+		this.field('t', {boost: 10})
+		this.field('tg', {boost: 8})
+		this.ref('id')
+	});
+
+
+    for (var key in store) {
+        if (store.hasOwnProperty(key)) {
+        	var title = store[key].t || '';
+        	var tags = store[key].tg || '';
+			this.SearchEngine.add({
+				id: key,
+				t: title,
+				tg: tags
+			});
+        }
+    }
+
+    this.startInputHandler();
 };
 
 //init with meta
@@ -149,83 +255,13 @@ HeartBeatSearchClass.prototype.init = function() {
 	this.storageInterface = new this.StorageInterface();
 
 	this.ajaxInterface().post(this.ajaxInterface().actions.GET_META, {}, _.bind(this.initWithMeta, this));
-};
 
-//compression algorithm
-var HeartBeatCompressLZW = {
-    compress: function (uncompressed) {
-        "use strict";
-        // Build the dictionary.
-        var i,
-            dictionary = {},
-            c,
-            wc,
-            w = "",
-            result = [],
-            dictSize = 256;
-        for (i = 0; i < 256; i += 1) {
-            dictionary[String.fromCharCode(i)] = i;
-        }
- 
-        for (i = 0; i < uncompressed.length; i += 1) {
-            c = uncompressed.charAt(i);
-            wc = w + c;
-            //Do not use dictionary[wc] because javascript arrays 
-            //will return values for array['pop'], array['push'] etc
-           // if (dictionary[wc]) {
-            if (dictionary.hasOwnProperty(wc)) {
-                w = wc;
-            } else {
-                result.push(dictionary[w]);
-                // Add wc to the dictionary.
-                dictionary[wc] = dictSize++;
-                w = String(c);
-            }
-        }
- 
-        // Output the code for w.
-        if (w !== "") {
-            result.push(dictionary[w]);
-        }
-        return result;
-    },
- 
- 
-    decompress: function (compressed) {
-        "use strict";
-        // Build the dictionary.
-        var i,
-            dictionary = [],
-            w,
-            result,
-            k,
-            entry = "",
-            dictSize = 256;
-        for (i = 0; i < 256; i += 1) {
-            dictionary[i] = String.fromCharCode(i);
-        }
- 
-        w = String.fromCharCode(compressed[0]);
-        result = w;
-        for (i = 1; i < compressed.length; i += 1) {
-            k = compressed[i];
-            if (dictionary[k]) {
-                entry = dictionary[k];
-            } else {
-                if (k === dictSize) {
-                    entry = w + w.charAt(0);
-                } else {
-                    return null;
-                }
-            }
- 
-            result += entry;
- 
-            // Add w+entry[0] to the dictionary.
-            dictionary[dictSize++] = w + entry.charAt(0);
- 
-            w = entry;
-        }
-        return result;
-    }
-}
+  jQuery('input').blur(function() {
+    // check if the input has any value (if we've typed into it)
+    if (jQuery(this).val())
+      jQuery(this).addClass('used');
+    else
+      jQuery(this).removeClass('used');
+  });
+
+};

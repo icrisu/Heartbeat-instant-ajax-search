@@ -1,0 +1,91 @@
+/* autocomplete widget */
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {    
+    background: #F2F2F2;
+    font-weight: normal;
+    color: #212121;
+}
+
+.ui-widget-content {
+    border: 1px solid #aaaaaa;
+    background: #ffffff;
+	-webkit-box-shadow: 1px 1px 3px 0px rgba(112,108,112,1);
+	-moz-box-shadow: 1px 1px 3px 0px rgba(112,108,112,1);
+	box-shadow: 1px 1px 3px 0px rgba(112,108,112,1);
+}
+
+.ui-widget-content .ui-menu-divider {
+	clear: both;
+    box-shadow: none;
+    border-width: 1px;
+    border: none;
+    height: 1px;
+    background: #CCC;
+}
+
+.ui-menu {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+    display: block;
+    float: left;
+}
+.ui-autocomplete {
+    position: absolute;
+    cursor: default;
+}
+
+.ui-menu .hb-autocomplete-item-li {
+    margin: 0;
+    padding: 0;
+    zoom: 1;
+    float: left;
+    clear: left;
+    width: 100%;
+}
+
+.ui-autocomplete .hb-autocomplete-item-li {
+	margin-right: 25px;
+	position: relative;
+}
+
+.ui-autocomplete .hb-autocomplete-item:link {
+	color: #8da6b2;
+	text-decoration: none;
+	font-family: 'Roboto', sans-serif;
+    padding: 15px 10px;
+    font-size: 15px;
+    margin: 0px;
+    display: block;
+}
+
+.hb-item-thumb-ui {
+	float: left;
+}
+
+.hb-item-thumb {
+	max-width: 60px; margin: 10px;
+}
+
+.ui-autocomplete .hb-autocomplete-item:visited {
+	color: #8da6b2;
+	text-decoration: none;
+}
+.ui-autocomplete .hb-autocomplete-item:hover {
+	color: #8da6b2;
+}
+.ui-autocomplete .hb-autocomplete-item:active {
+	color: #8da6b2;
+}
+.hb-autocomplete-item-action-ui {
+    position: absolute;
+    height: 100%;
+    right: 5px; top: 0px;
+}
+
+.hb-autocomplete-item-action {
+    position: absolute;
+    top: 37%;
+    left: -14px;
+    display: block;
+}
+/* end autocomplete widget */

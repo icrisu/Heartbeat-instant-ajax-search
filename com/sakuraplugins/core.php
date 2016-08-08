@@ -2,6 +2,7 @@
 require_once(dirname(__FILE__) . '/views/ui/admin-core-view.php');
 require_once(dirname(__FILE__) . '/api/heartbeat-api.php');
 require_once(dirname(__FILE__) . '/utils/utils.php');
+require_once(dirname(__FILE__) . '/shortcodes/hb-shortcodes.php');
 
 /**
 * Base plugin class
@@ -13,8 +14,8 @@ class HeartBeatCore {
 
 
 	public function initializeHandler() {
-		//$scm = new ShortcodesManager();
-		//$scm->registerShortcodes();
+		$scm = new HBShortcodeManager();
+		$scm->registerShortcodes();
 	}
 
 	//menu event
@@ -25,17 +26,36 @@ class HeartBeatCore {
 
 	//Enqueue scripts frontend
 	public function wpEnqueueScriptsHandler() {
+
+			//admin style
+
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('underscore', false, array('jquery'));
+		wp_enqueue_script('jquery-ui-autocomplete', false, array('jquery'));
 
 		wp_register_script('lunr_js', HEARTBEAT_FRONT_URI.'/js/lunr.min.js', array('underscore'), FALSE, TRUE);
 		wp_enqueue_script('lunr_js');
-				
+
 		wp_register_script('heart_beat_core_js', HEARTBEAT_FRONT_URI.'/js/heart-beat.js', array('lunr_js'), FALSE, TRUE);
 		wp_enqueue_script('heart_beat_core_js');
 
+		HBeatUtils::enqueFontsFrom(array(
+			array('key'=>'hb-roboto', 'resource'=>'://fonts.googleapis.com/css?family=Roboto:400,300,500'),
+		));
 
-		wp_localize_script('heart_beat_core_js', 'HeartBeatAjax', array('url' => admin_url('admin-ajax.php')));
+		wp_localize_script('heart_beat_core_js', 'HeartBeatOptions', array(
+			'ajaxurl' => admin_url('admin-ajax.php'),
+			'md_max_results' => 5
+		));
+
+		//wp_register_style( 'jquery-ui-styles','http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css' );
+		//wp_enqueue_style( 'jquery-ui-styles');	
+
+		wp_register_style('heartbeat_icons', HEARTBEAT_FRONT_URI . '/css/fonts/style.css');
+		wp_enqueue_style('heartbeat_icons');
+
+		wp_register_style('heartbeat_style', HEARTBEAT_FRONT_URI . '/css/heartbeat.css');
+		wp_enqueue_style('heartbeat_style');			
 	}
 
 	//admin scripts
@@ -82,11 +102,10 @@ class HeartBeatCore {
 	}
 
 	//admin bar custom
-	public function adminBarCustom() {		
-		$current_screen = get_current_screen();
-		$screenID = $current_screen->id;		
-		if (function_exists('get_current_screen')) {
-			$current_screen = get_current_screen();		
+	public function adminBarCustom() {						
+		if (function_exists('get_current_screen')) {			
+			$current_screen = get_current_screen();	
+			$screenID = $current_screen->id;	
 			if ((substr($screenID, -strlen($this->_optionPageSlug)) === $this->_optionPageSlug)) {	
 				require_once(dirname(__FILE__) . '/views/ui/heartbeat-admin-header.php');
 				HeartBeatHeader::render();
