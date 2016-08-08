@@ -125,6 +125,55 @@ var HeartBeatViews = {
 			}
 		});
 		return new view(options);
+	},
+
+	//Shortcodes  view
+	ShortcodesView: function(options) {
+		var view = Backbone.View.extend({
+
+			events: {
+				'click .hb-activate-integration-cb': 'checkActivateHandler',
+				'click .saveSettingsBtn' : 'saveSettings'
+			},
+
+			el: '#shortcodes',
+
+			renderActivation: function() {
+				var isActivated = this.model.get('isNativeIntegration');
+				var html = (isActivated == 'true') ? ' checked="checked"' : '';
+				this.$el.find('.hb-activate-integration').html([
+			      '<input type="checkbox" id="hb-cb-integrate" class="hb-activate-integration-cb"' + html + ' />',
+			      '<label for="hb-cb-integrate">Activate/Deactivate</label>'
+				].join(''));
+			},
+
+			renderNativeSelector: function() {
+				var nativeSelector = this.model.get('nativeSelector');
+				this.$el.find('.hb-jq-selector-ui').html([
+					'<input id="hb-jq-selector" type="text" class="validate" placeholder="jQuery selector" value="' + nativeSelector + '">'					
+				].join(''));				
+			},
+
+			initialize: function() {
+				this.renderActivation();
+				this.renderNativeSelector();
+				this.model.on('change:isNativeIntegration', _.bind(this.renderActivation, this));
+				this.model.on('change:nativeSelector', _.bind(this.renderNativeSelector, this));				
+			},
+
+			checkActivateHandler: function(event) {
+		        var target = jQuery(event.target);
+		        var selected = target.is(':checked');
+		        this.model.set('isNativeIntegration', selected);
+		        this.model.saveData();
+			},			
+
+			saveSettings: function() {
+				this.model.set('nativeSelector', this.$el.find('#hb-jq-selector').val());
+				this.model.saveData();
+			}
+		});
+		return new view(options);
 	}	
 
 

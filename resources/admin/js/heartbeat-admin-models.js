@@ -97,13 +97,17 @@ var HeartBeatModels = {
 		var model = Backbone.Model.extend({
 			defaults: {
 				customCSS: '',
-				maxResults: 5
+				maxResults: 5,
+				isNativeIntegration: 'false',
+				nativeSelector: ''
 			},
 
 			fetchData: function() {
 				HeartBeatAdmin.fetchSettings(_.bind(function(err, result) {
 					this.set('customCSS', result.customCSS);
 					this.set('maxResults', result.maxResults);
+					this.set('isNativeIntegration', result.isNativeIntegration);
+					this.set('nativeSelector', result.nativeSelector);
 				}, this));			
 			},
 

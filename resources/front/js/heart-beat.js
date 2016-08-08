@@ -94,20 +94,16 @@ HeartBeatSearchClass.prototype.StorageInterface = function() {
 	}
 
 	this.removeIndexes = function(toBeRemoved, hash) {
-		//console.log('remove here');
 		this.getIndexes();	
-		//console.log(this.indexes);
 		for (var k in toBeRemoved) {
 		    if (toBeRemoved.hasOwnProperty(k)) {
 		       try {
-		       		//console.log(this.indexes[k]);
 		       		delete this.indexes[k];
 		       } catch(e) {
 		       		this.log(e);
 		       }
 		    }
 		}
-		//console.log(this.indexes);
 		this.saveIndexes({
 			hash: hash,
 			indexes: this.indexes
@@ -193,9 +189,11 @@ HeartBeatSearchClass.prototype.handleInput = function(hbmdInput) {
 HeartBeatSearchClass.prototype.startInputHandler = function() {
 	var _self = this;
 	//handle default WP theme search form 
-	jQuery('.search-field').each(function(indx) {
-	    _self.handleInput(jQuery(this));	
-	});
+	if (HeartBeatOptions.isNativeIntegration == 'true') {
+		jQuery(HeartBeatOptions.nativeSelector).each(function(indx) {
+		    _self.handleInput(jQuery(this));	
+		});
+	}
 
 	//handle material design custom form
 	jQuery('.hbmd-search-input').each(function(indx) {

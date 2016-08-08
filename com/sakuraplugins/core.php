@@ -53,7 +53,9 @@ class HeartBeatCore {
 		$settingsModel = new HBSettingsModel();
 		wp_localize_script('heart_beat_core_js', 'HeartBeatOptions', array(
 			'ajaxurl' => admin_url('admin-ajax.php'),
-			'md_max_results' => (int)$settingsModel->maxResults
+			'md_max_results' => (int)$settingsModel->maxResults,
+			'isNativeIntegration' => $settingsModel->isNativeIntegration,
+			'nativeSelector' => $settingsModel->nativeSelector
 		));
 
 		wp_register_style('heartbeat_icons', HEARTBEAT_FRONT_URI . '/css/fonts/style.css');

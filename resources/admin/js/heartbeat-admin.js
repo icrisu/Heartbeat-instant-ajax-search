@@ -93,7 +93,10 @@ HeartBeatAdminClass.prototype.initViews = function() {
 	var indexModel = new HeartBeatModels.IndexModel();
 	this.views['indexOptions'] = new HeartBeatViews.IndexOptions({model: indexModel});
 	
-	var settingsModel = new HeartBeatModels.SettingsModel();
+	var settingsModel = new HeartBeatModels.SettingsModel();	
+
+	this.views['shortcodes'] = new HeartBeatViews.ShortcodesView({model: settingsModel});
+
 	this.views['settings'] = new HeartBeatViews.SettingsView({model: settingsModel});
 
 	jQuery('.admin-tabs-container').show();

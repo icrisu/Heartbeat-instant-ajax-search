@@ -84,6 +84,11 @@
 	min-width: 100%;
 	min-height: 150px;
 }
+
+.hb-shortcode-display {
+	background: #fbc5c7;
+	padding: 3px 7px;
+}
 /* end settings */
 
 .hb-modal-header {
