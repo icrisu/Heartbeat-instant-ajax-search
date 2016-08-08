@@ -264,26 +264,6 @@ HeartBeatSearchClass.prototype.startSearchEngine = function() {
     this.startInputHandler();
 };
 
-//init with meta
-HeartBeatSearchClass.prototype.initWithMeta = function(err, result) {
-	if (!err && result) {				
-		var currentMeta = this.storageInterface.getMeta();		
-
-		if (_.isNull(currentMeta) || currentMeta.hash != result.hash) {
-			this.log('update meta & results');
-			this.ajaxInterface().post(this.ajaxInterface().actions.GET_INDEX_DATA, {}, _.bind(function(err, result) {
-				if (!err && result) {
-					this.storageInterface.saveIndexes(result);
-					this.startSearchEngine();
-				}
-			}, this));
-		} else {
-			//start search engine
-			this.startSearchEngine();
-		}
-	}
-};
-
 /**
  * process result 
  * @param  {object} result 
@@ -291,11 +271,11 @@ HeartBeatSearchClass.prototype.initWithMeta = function(err, result) {
  */
 HeartBeatSearchClass.prototype.processIndexesResult = function(result) {
 	if (result.indexes && result.indexes == 'no_change') {
-		console.log('do nothing same hash');
+		this.log('do nothing same hash');
 		return this;
 	}
 	if (result.indexes) {
-		console.log('save all indexes');
+		this.log('save all indexes');
 		this.storageInterface.saveIndexes(result);
 	} else {
 		if (result.removed && result.hash) {
@@ -303,11 +283,8 @@ HeartBeatSearchClass.prototype.processIndexesResult = function(result) {
 		}
 		if (result.added && result.hash) {
 			this.storageInterface.addIndexes(result.added, result.hash);
-		}
-		if (result.hash) {
-			//this.storageInterface.saveMeta(result.hash);
-		}		
-		console.log('compute result');
+		}	
+		this.log('compute result');
 	}
 	return this;
 };
@@ -336,15 +313,6 @@ HeartBeatSearchClass.prototype.init = function() {
 			this.processIndexesResult(result).startSearchEngine();			
 		}
 	}, this));
-
-
+	
 	return;
-	/*
-	if (_.isNull(meta)) {
-		console.log('meta is null');
-		this.ajaxInterface().post(this.ajaxInterface().actions.GET_META, {}, _.bind(this.initWithMeta, this));
-	} else {
-		console.log('not null');
-	}*/
-
 };

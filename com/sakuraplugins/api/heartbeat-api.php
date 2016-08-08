@@ -156,24 +156,6 @@ class HeartBeatAPI
 			$m->get();
 			echo json_encode(array('status' => 'OK', 'data' => array('hash' => $m->hash, 'indexes' => $m->result)));
 		}
-
-
-		/*
-		if ($hash == 'empty') {
-			//get all indexes
-			$m->get();
-			echo json_encode(array('status' => 'OK', 'data' => array('hash' => $m->hash, 'indexes' => $m->result)));
-		} else if ($hash == $m->hash) {
-			//no differences
-			echo json_encode(array('status' => 'OK', 'data' => array('hash' => $m->hash, 'indexes' => 'no_change')));
-		} else {
-			//send differences
-			if ($m->previousHash != 'empty') {
-				$m->getPreviousResult();
-				$diff = $m->getDiffIndexes();
-				echo json_encode(array('status' => 'OK', 'data' => array('hash' => $m->hash, 'removed' => $diff['removed'], 'added' => $diff['added'])));
-			}
-		}*/	
 		die();
 	}
 }

@@ -12,7 +12,9 @@ class HBSearchTermsModel
 		$this->getTerms();
 		$postTypes = get_post_types(array(), 'objects');
 		foreach ($postTypes as $type) {
-			array_push($this->availableTerms, array('key' => $type->name, 'label' => $type->labels->name));
+			if ($type->name != 'revision' && $type->name != 'nav_menu_item') {
+				array_push($this->availableTerms, array('key' => $type->name, 'label' => $type->labels->name));
+			}							
 		}
 	}
 
