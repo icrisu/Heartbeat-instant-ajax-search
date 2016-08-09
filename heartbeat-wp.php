@@ -2,7 +2,7 @@
 /*
 Plugin Name: HeartBeat - Instant WordPress Ajax Search
 Plugin URI: http://sakuraplugins.com/
-Description: HeartBeat - Instant WordPress Ajax Search
+Description: HeartBeat - Instant Ajax Search for WordPress
 Author: SakuraPlugins
 Version: 1.0.0
 Author URI: http://sakuraplugins.com/
