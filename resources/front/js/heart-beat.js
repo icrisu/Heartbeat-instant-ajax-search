@@ -287,8 +287,17 @@ HeartBeatSearchClass.prototype.processIndexesResult = function(result) {
 	return this;
 };
 
+HeartBeatSearchClass.prototype.settings = function() {
+	return {
+		isDebugOn: false
+	}
+};
+
 //log helper
 HeartBeatSearchClass.prototype.log = function(msg) {
+	if (!this.settings().isDebugOn) {
+		return;
+	}
 	if (!window.console) {
 		console = { log: function(){} };
 	}
